@@ -56,6 +56,7 @@ def login():
 @app.route('/profile')
 def profile():
     return render_template('profile.html', username=session['username'],  password=session['password'])
+
     # , email=session['email']
 
 @app.route('/logout')
@@ -89,8 +90,9 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form !'
         else:
-            cursor.execute('INSERT INTO users VALUES (NULL, % s, % s, % s, %s)', (name, username, password, email,))
+            cursor.execute('INSERT INTO users VALUES (NULL, %s, %s, %s, %s)', (name, username, password, email,))
             mysql.connection.commit()
+            cursor.close()
             msg = 'You have successfully registered !'
     elif request.method == 'POST':
         msg = 'Please fill out the form !'
@@ -108,38 +110,45 @@ def dashboard():
 # @flask_login.login_required
 def new_plant():
     # if request.method == "GET":
-            return render_template("new_plant.html", plants=PLANTS, username=session['username'])
-           
+    msg = ''
+    if request.method == "POST" and 'plantName' in request.form and 'plantType' in request.form:
+        plantName = request.form('plantName')
+        plantType = request.form('plantType')
+
+        cursor = mysql.connection.cursor()
+        cursor.execute('''INSERT INTO inventary (plantName, plantType) VALUES (NULL, %s, %s)''', (plantName, plantType, ))
+        mysql.connection.commit()
+        cursor.close()
+
+        msg = 'You have successfully registered a new plant !'
+    
+    return render_template("new_plant.html", plants=PLANTS, msg = msg)
+
 
     # elif request.method == "POST" and 'name' in request.form and 'plant' in request.form:
-            # userId 
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT Id FROM users WHERE username = %s', (username, ))
-            userId = cur.fetchone()
-
-            plantName = request.form,get('plantName')
-            plantType = request.form.get('plantType')
-
-            cursor = mysql.connection.cursor()
-            cursor.execute('''INSERT INTO inventary VALUES (NULL, % s, % s, % s)''', (userId, plantName, plantType, ))
-            mysql.connection.commit()
-            cursor.close()
-
+            # # userId 
+            # cur = mysql.connection.cursor()
+            # cur.execute('SELECT Id FROM users WHERE username = %s', (username, ))
+            # userId = cur.fetchone()
 
 
 @app.route("/myplant", methods=["GET", "POST"])
 # @flask_login.login_required
 def myplant():
-    name = request.form.get("name")
-    if not name:
-        return render_template("error.html", message="No name")
-    plant = request.form.get("plant")
-    if not plant:
-        return render_template("error.html", message="missing plant")
-    if plant not in PLANTS:
-        return render_template("error.html", message="stop hacking my site")
-    REGISTRANTS[name] = plant
-    return render_template("myplant.html", registrants  = REGISTRANTS)
+    cur = mysql.connection.cursor()
+    cur.execute("select * from inventary")
+    inventary = cur.fetchall()
+    return render_template("myplant.html", inventary=inventary)
+    # name = request.form.get("name")
+    # if not name:
+    #     return render_template("error.html", message="No name")
+    # plant = request.form.get("plant")
+    # if not plant:
+    #     return render_template("error.html", message="missing plant")
+    # if plant not in PLANTS:
+    #     return render_template("error.html", message="stop hacking my site")
+    # REGISTRANTS[name] = plant
+    # return render_template("myplant.html", registrants  = REGISTRANTS)
 
 @app.route("/notifications")
 def notifications():

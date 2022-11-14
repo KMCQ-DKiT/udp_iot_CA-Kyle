@@ -10,18 +10,19 @@
           <tr>
             <th scope="col"> Name </th>
             <th scope="col"> Plants </th>
-            <th scope="col"> Temperature </th>
+            <th scope="col"> Date </th> 
+            <!-- <th scope="col"> Temperature </th>
             <th scope="col"> UV </th>
             <th scope="col"> Moisture </th>
             <th scope="col"> Humidity </th>
-            <th scope="col"> Date </th>
+            -->
           </tr>
           </thead>
           <tbody>
-          {% for name in registrants %}
+          {% for inventary in inventary %}
           <tr>
-            <td>{{name}}</td>
-            <td>{{registrants[name]}}</td>
+            <td>{{inventary[1]}}</td>
+            <td>{{inventary[2]}}</td>
           </tr>
           {% endfor %}
           </tbody>

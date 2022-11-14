@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2 class="text-center"> Dashboard </h2> </br>
+
+<div class="row">
+    <div class="col-sm-6 offset-sm-3">
+      <div class="jumbotron">
+        <h2> Hi, {{ username }} </h2> <br>
+        <a type="button" class="btn btn-secondary btn-lg btn-block" href="new_plant">New Plant</a>        
+        <a type="button" class="btn btn-secondary btn-lg btn-block" href="myplant">My Plants</a>
+        <a type="button" class="btn btn-secondary btn-lg btn-block" href="notifications">Notifications</a>
+        <a type="button" class="btn btn-secondary btn-lg btn-block" href="#">Need Help</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -20,7 +20,7 @@ app.config['MYSQL_DB'] = 'pumpkin'
 mysql = MySQL(app)
 
 PLANTS = ['Aloe Vera', 'Peace Lily', 'Lemon Tree']
-REGISTRANTS = {}
+# REGISTRANTS = {}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -45,7 +45,7 @@ def login():
             # session['id'] = user['id']
             session['username'] = user['username']
             session['password'] = user['password']
-            # session['email'] = user['email']
+            session['email'] = user['email']
             msg = 'Logged in successfully !'
             return redirect(url_for('profile'))
             # return render_template('profile.html', username=current_user.username)
@@ -55,9 +55,7 @@ def login():
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html', username=session['username'],  password=session['password'])
-
-    # , email=session['email']
+    return render_template('profile.html', plantTypes=PLANTS, username=session['username'],  password=session['password'], email=session['email'])
 
 @app.route('/logout')
 # @flask_login.login_required
@@ -98,57 +96,55 @@ def register():
         msg = 'Please fill out the form !'
     return render_template('register.html', msg = msg)
 
-
-
 @app.route("/dashboard", methods=["GET"])
 # @flask_login.login_required
 def dashboard():
     return render_template("dashboard.html", username=session['username'])
-
 
 @app.route("/new_plant", methods=["GET", "POST"])
 # @flask_login.login_required
 def new_plant():
     # if request.method == "GET":
     msg = ''
-    if request.method == "POST" and 'plantName' in request.form and 'plantType' in request.form:
-        plantName = request.form('plantName')
-        plantType = request.form('plantType')
+    username=session['username']
 
+    if request.method == "POST":
+        plantName = request.form['plantName']
+        if not plantName:
+            return render_template('error.html', message="Missing plant name")        
+        
+        plantType = request.form['plantType']
+        if not plantType:
+            return render_template('error.html', message="Missing plant type")
+        
+        cur1 = mysql.connection.cursor()
+        cur1.execute("select Id from users where username = %s", (username, ))
+        userId = cur1.fetchone()
+        
         cursor = mysql.connection.cursor()
-        cursor.execute('''INSERT INTO inventary (plantName, plantType) VALUES (NULL, %s, %s)''', (plantName, plantType, ))
+        cursor.execute('''insert into inventary values (NULL, %s, %s, %s)''', (userId, plantName, plantType))
         mysql.connection.commit()
         cursor.close()
-
         msg = 'You have successfully registered a new plant !'
-    
-    return render_template("new_plant.html", plants=PLANTS, msg = msg)
+        return redirect(url_for('myplant'))
 
-
-    # elif request.method == "POST" and 'name' in request.form and 'plant' in request.form:
-            # # userId 
-            # cur = mysql.connection.cursor()
-            # cur.execute('SELECT Id FROM users WHERE username = %s', (username, ))
-            # userId = cur.fetchone()
-
+    return render_template("new_plant.html", msg = msg, username=session['username'], plantTypes=PLANTS)
 
 @app.route("/myplant", methods=["GET", "POST"])
 # @flask_login.login_required
 def myplant():
-    cur = mysql.connection.cursor()
-    cur.execute("select * from inventary")
-    inventary = cur.fetchall()
-    return render_template("myplant.html", inventary=inventary)
-    # name = request.form.get("name")
-    # if not name:
-    #     return render_template("error.html", message="No name")
-    # plant = request.form.get("plant")
-    # if not plant:
-    #     return render_template("error.html", message="missing plant")
-    # if plant not in PLANTS:
-    #     return render_template("error.html", message="stop hacking my site")
-    # REGISTRANTS[name] = plant
-    # return render_template("myplant.html", registrants  = REGISTRANTS)
+
+    username=session['username']
+    
+    cur1 = mysql.connection.cursor()
+    cur1.execute("select Id from users where username = %s", (username, ))
+    userId = cur1.fetchone()
+
+    cur2 = mysql.connection.cursor()
+    cur2.execute("select * from inventary where userId = %s", (userId, ))
+    inventary = cur2.fetchall()
+
+    return render_template("myplant.html", username=session['username'], inventary=inventary)
 
 @app.route("/notifications")
 def notifications():

@@ -5,18 +5,23 @@
 <div class="row">
     <div class="col-sm-6 offset-sm-3">
         <div class="jumbotron">
-            <form action = "/myplant" method="post">
+            <form action = "/new_plant" method="post">
                 <div class="form-group">
                     <label for="getPlantName"> Plant Name </label>
                     <input class="form-control" autocomplete="off" autofocus placeholder="Name" name="plantName" type="text">
                 </div>
                 
+                <!-- <div class="form-group">
+                    <label for="getPlantType"> Plant Type </label>
+                    <input class="form-control" autocomplete="off" autofocus placeholder="Type" name="plantType" type="text">
+                </div> -->
+
                 <div class="form-group">
-                    <label for="getPlantType"> Plant </label>
+                    <label for="getPlantType"> Plant Type </label>
                     <select class="form-control" name="plantType">   
                         <option disabled selected value="">Plant</option>
-                        {% for plant in plants%}
-                        <option value="{{plant}}">{{plant}}</option>
+                        {% for plantType in plantTypes%}
+                        <option value="{{plantType}}">{{plantType}}</option>
                         {% endfor %}
                     </select>
                 </div>

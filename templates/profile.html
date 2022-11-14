@@ -4,21 +4,25 @@
 
 <h2 class="text-center"> Profile Information </h2> </br>
 
-<div>
-    <h1>Welcome, {{ username }}</h1>
-    <table class="table">
-        <tr>
-            <td>Username:</td>
-            <td>{{ username }}</td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td>{{ password }}</td>
-        </tr>
-        <tr>
-            <td>Email:</td>
-            <td>{{ email }}</td>
-        </tr>
-    </table>
-</div>
+<div class="row">
+    <div class="col-sm-6 offset-sm-3">
+      <div class="jumbotron">
+        <h2 class = "">Welcome, {{ username }}</h2> <br>
+        <table class="table">
+            <tr>
+                <th scope="col">Username:</th>
+                <td>{{ username }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Password:</th>
+                <td>{{ password }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Email:</th>
+                <td>{{ email }}</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
 {% endblock %}

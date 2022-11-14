@@ -10,7 +10,7 @@
   <body >
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
       <h5 class="my-0 mr-md-auto font-weight-normal">Potted Plant Protection</h5>
-      <h6 class="my-0 mr-md-auto font-weight-normal" > Hi, {{ username }}</h6>
+      <h5 class="my-0 mr-md-auto font-weight-normal" > Hi, {{ username }}</h5>
       <nav class="my-2 my-md-0 mr-md-3">
         
         <a class="p-2 text-dark" href="/" title="Home">Home</a>
@@ -28,8 +28,11 @@
       {% block body %}{% endblock %}
     </div>
 
-    <div class="navbar fixed-bottom">
-        <navbar class="text-center">Created by Pumpkin Group</navbar>
+    <div class="fixed-bottom">
+        <navbar>
+         <h6 class="text-center"> Created by Pumpkin Group </h6> 
+
+        </navbar>
     </div>
 
     
